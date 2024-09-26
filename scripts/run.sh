@@ -19,6 +19,9 @@ do
     elif [ "$arg" = "cva6" ] && [ ${CORE_SPECIFIED} == 0 ]; then
 	CMD_OPTIONS="${CMD_OPTIONS} --core cva6"
 	CORE_SPECIFIED=1
+    elif [ "$arg" = "testcore" ] && [ ${CORE_SPECIFIED} == 0 ]; then
+	CMD_OPTIONS="${CMD_OPTIONS} --core testcore"
+	CORE_SPECIFIED=1
     else
 	CMD_OPTIONS="${CMD_OPTIONS} ${arg}"
     fi

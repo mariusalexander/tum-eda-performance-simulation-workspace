@@ -39,7 +39,7 @@ if targetSW_failed:
    sys.exit("FATAL: Target-SW handle \"" + args.targetSW + "\" is not supported!")
 
 # Resolve BOOTROM (if applicable)
-if args.core == "cva6":
+if os.environ.get(targetSW_prefix + "BOOTROM") is not None:
    sim_args += " --bootrom " + os.environ.get(targetSW_prefix + "BOOTROM")
    
 # Execute
