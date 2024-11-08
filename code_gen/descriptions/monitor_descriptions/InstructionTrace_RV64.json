@@ -1,0 +1,174 @@
+{"trace": {
+    "name": "InstructionTrace_RV64",
+    "setId": "Automatic",
+    "separator": ",",
+    "traceValues": [
+	{"name": "pc"},
+	{"name": "code"},
+	{"name": "assembly", "type": "string", "size": 50},
+	{"name": "pc_new"},
+	{"name": "imm"},
+	{"name": "rs1_data"},
+	{"name": "rs2_data"},
+	{"name": "rd_data"},
+	{"name": "jump_pc"},
+	{"name": "csr"},
+	{"name": "csr_reg"},
+	{"name": "mem_addr"}
+    ],
+
+    "instructions": [
+
+	{"name": "_def", "mappings": [
+	    {"traceValue": "code", "description": "$code"},
+	    {"traceValue": "pc", "description": "$pc"},
+	    {"traceValue": "assembly", "description": "$asm"}
+	]},
+
+	{"name": "jal", "mappings":[
+	    {"traceValue": "code", "description": "$code"},
+	    {"traceValue": "pc", "description": "$pc"},
+	    {"traceValue": "assembly", "description": "$asm"},
+	    {"traceValue": "imm", "description": "$bitfield{imm}"},
+	    {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"},
+	    {"traceValue": "jump_pc", "description": "$pc", "position": "post"}
+	]},
+
+	{"name": "jalr", "mappings":[
+	    {"traceValue": "code", "description": "$code"},
+	    {"traceValue": "pc", "description": "$pc"},
+	    {"traceValue": "assembly", "description": "$asm"},
+	    {"traceValue": "imm", "description": "$bitfield{imm}"},
+	    {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	    {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"},
+	    {"traceValue": "jump_pc", "description": "$pc", "position": "post"}
+	]}
+    ],
+
+    "instructionGroups": [
+
+	{"name": "Arith_R_Type",
+	 "instructions": [{"name": "add"}, {"name": "sub"}, {"name": "sll"}, {"name": "slt"}, {"name": "sltu"}, {"name": "xor"}, {"name": "srl"}, {"name": "sra"}, {"name": "or"}, {"name": "and"}, {"name": "addw"}, {"name": "subw"}, {"name": "sllw"}, {"name": "srlw"}, {"name": "sraw"}, {"name": "mul"}, {"name": "mulh"}, {"name": "mulhsu"}, {"name": "mulhu"}, {"name": "div"}, {"name": "divu"}, {"name": "rem"}, {"name": "remu"}, {"name": "mulw"}, {"name": "divw"}, {"name": "divuw"}, {"name": "remw"}, {"name": "remuw"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rs2_data", "description": "$reg{$bitfield{rs2}}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"}
+	 ]
+	},
+
+	{"name": "Arith_I_Type",
+	 "instructions": [{"name": "addi"}, {"name": "slti"}, {"name": "sltiu"}, {"name": "xori"}, {"name": "ori"}, {"name": "andi"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "pc_new", "description": "$pc"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"}
+	 ]
+	},
+
+	{"name": "Arith_Imm_R_Type",
+	 "instructions": [{"name": "slli"}, {"name": "srli"}, {"name": "srai"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"}
+	 ]
+	},
+
+	{"name": "Arith_Imm_R_W_Type",
+	 "instructions": [{"name": "slliw"}, {"name": "srliw"}, {"name": "sraiw"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"}
+	 ]
+	},
+
+	{"name": "Load_I_Type",
+	 "instructions": [{"name": "lb"}, {"name": "lh"}, {"name": "lw"}, {"name": "lbu"}, {"name": "lhu"}, {"name": "lwu"}, {"name": "ld"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"},
+	     {"traceValue": "mem_addr", "description": "$reg{$bitfield{rs1}ULL} + $bitfield{imm}LL"}
+	 ]
+	},
+
+	{"name": "Store_S_Type",
+	 "instructions": [{"name": "sb"}, {"name": "sh"}, {"name": "sw"}, {"name": "sd"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rs2_data", "description": "$reg{$bitfield{rs2}}"},
+	     {"traceValue": "mem_addr", "description": "$reg{$bitfield{rs1}ULL} + $bitfield{imm}LL"}
+	 ]
+	},
+
+	{"name": "CSR_I_Type",
+	 "instructions": [{"name": "csrrw"}, {"name": "csrrs"}, {"name": "csrrc"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "csr", "description": "$bitfield{csr}"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"},
+	     {"traceValue": "csr_reg", "description": "$csr{$bitfield{csr}}", "position": "post"}
+	 ]
+	},
+
+	{"name": "CSR_Imm_I_Type",
+	 "instructions": [{"name": "csrrwi"}, {"name": "csrrsi"}, {"name": "csrrci"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "csr", "description": "$bitfield{csr}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"}
+	 ]
+	},
+
+	{"name": "Branch_B_Type",
+	 "instructions": [{"name": "beq"}, {"name": "bne"}, {"name": "blt"}, {"name": "bge"}, {"name": "bltu"}, {"name": "bgeu"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rs2_data", "description": "$reg{$bitfield{rs2}}"},
+	     {"traceValue": "jump_pc", "description": "$pc", "position": "post"}
+	 ]
+	},
+
+	{"name": "RegLoad_U_Type",
+	 "instructions": [{"name": "lui"}, {"name": "auipc"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"}
+	 ]
+	}
+    ]
+}}
