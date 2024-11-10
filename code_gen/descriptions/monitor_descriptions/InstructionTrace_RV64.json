@@ -1,5 +1,6 @@
 {"trace": {
     "name": "InstructionTrace_RV64",
+	"coreName": "RV64IMACFD",
     "setId": "Automatic",
     "separator": ",",
     "traceValues": [
@@ -19,13 +20,13 @@
 
     "instructions": [
 
-	{"name": "_def", "mappings": [
+	{"name": "_DEF", "mappings": [
 	    {"traceValue": "code", "description": "$code"},
 	    {"traceValue": "pc", "description": "$pc"},
 	    {"traceValue": "assembly", "description": "$asm"}
 	]},
 
-	{"name": "jal", "mappings":[
+	{"name": "JAL", "mappings":[
 	    {"traceValue": "code", "description": "$code"},
 	    {"traceValue": "pc", "description": "$pc"},
 	    {"traceValue": "assembly", "description": "$asm"},
@@ -34,7 +35,7 @@
 	    {"traceValue": "jump_pc", "description": "$pc", "position": "post"}
 	]},
 
-	{"name": "jalr", "mappings":[
+	{"name": "JALR", "mappings":[
 	    {"traceValue": "code", "description": "$code"},
 	    {"traceValue": "pc", "description": "$pc"},
 	    {"traceValue": "assembly", "description": "$asm"},
@@ -48,7 +49,7 @@
     "instructionGroups": [
 
 	{"name": "Arith_R_Type",
-	 "instructions": [{"name": "add"}, {"name": "sub"}, {"name": "sll"}, {"name": "slt"}, {"name": "sltu"}, {"name": "xor"}, {"name": "srl"}, {"name": "sra"}, {"name": "or"}, {"name": "and"}, {"name": "addw"}, {"name": "subw"}, {"name": "sllw"}, {"name": "srlw"}, {"name": "sraw"}, {"name": "mul"}, {"name": "mulh"}, {"name": "mulhsu"}, {"name": "mulhu"}, {"name": "div"}, {"name": "divu"}, {"name": "rem"}, {"name": "remu"}, {"name": "mulw"}, {"name": "divw"}, {"name": "divuw"}, {"name": "remw"}, {"name": "remuw"}],
+	 "instructions": [{"name": "ADD"}, {"name": "SUB"}, {"name": "SLL"}, {"name": "SLT"}, {"name": "SLTU"}, {"name": "XOR"}, {"name": "SRL"}, {"name": "SRA"}, {"name": "OR"}, {"name": "AND"}, {"name": "ADDW"}, {"name": "SUBW"}, {"name": "SLLW"}, {"name": "SRLW"}, {"name": "SRAW"}, {"name": "MUL"}, {"name": "MULH"}, {"name": "MULHSU"}, {"name": "MULHU"}, {"name": "DIV"}, {"name": "DIVU"}, {"name": "REM"}, {"name": "REMU"}, {"name": "MULW"}, {"name": "DIVW"}, {"name": "DIVUW"}, {"name": "REMW"}, {"name": "REMUW"}],
 	 "mappings": [
 	     {"traceValue": "code", "description": "$code"},
 	     {"traceValue": "pc", "description": "$pc"},
@@ -60,7 +61,7 @@
 	},
 
 	{"name": "Arith_I_Type",
-	 "instructions": [{"name": "addi"}, {"name": "slti"}, {"name": "sltiu"}, {"name": "xori"}, {"name": "ori"}, {"name": "andi"}],
+	 "instructions": [{"name": "ADDI"}, {"name": "SLTI"}, {"name": "SLTIU"}, {"name": "XORI"}, {"name": "ORI"}, {"name": "ANDI"}],
 	 "mappings": [
 	     {"traceValue": "code", "description": "$code"},
 	     {"traceValue": "pc", "description": "$pc"},
@@ -73,7 +74,7 @@
 	},
 
 	{"name": "Arith_Imm_R_Type",
-	 "instructions": [{"name": "slli"}, {"name": "srli"}, {"name": "srai"}],
+	 "instructions": [{"name": "SLLI"}, {"name": "SRLI"}, {"name": "SRAI"}],
 	 "mappings": [
 	     {"traceValue": "code", "description": "$code"},
 	     {"traceValue": "pc", "description": "$pc"},
@@ -85,7 +86,7 @@
 	},
 
 	{"name": "Arith_Imm_R_W_Type",
-	 "instructions": [{"name": "slliw"}, {"name": "srliw"}, {"name": "sraiw"}],
+	 "instructions": [{"name": "SLLIW"}, {"name": "SRLIW"}, {"name": "SRAIW"}],
 	 "mappings": [
 	     {"traceValue": "code", "description": "$code"},
 	     {"traceValue": "pc", "description": "$pc"},
@@ -97,7 +98,7 @@
 	},
 
 	{"name": "Load_I_Type",
-	 "instructions": [{"name": "lb"}, {"name": "lh"}, {"name": "lw"}, {"name": "lbu"}, {"name": "lhu"}, {"name": "lwu"}, {"name": "ld"}],
+	 "instructions": [{"name": "LB"}, {"name": "LH"}, {"name": "LW"}, {"name": "LBU"}, {"name": "LHU"}, {"name": "LWU"}, {"name": "LD"}],
 	 "mappings": [
 	     {"traceValue": "code", "description": "$code"},
 	     {"traceValue": "pc", "description": "$pc"},
@@ -110,7 +111,7 @@
 	},
 
 	{"name": "Store_S_Type",
-	 "instructions": [{"name": "sb"}, {"name": "sh"}, {"name": "sw"}, {"name": "sd"}],
+	 "instructions": [{"name": "SB"}, {"name": "SH"}, {"name": "SW"}, {"name": "SD"}],
 	 "mappings": [
 	     {"traceValue": "code", "description": "$code"},
 	     {"traceValue": "pc", "description": "$pc"},
@@ -123,7 +124,7 @@
 	},
 
 	{"name": "CSR_I_Type",
-	 "instructions": [{"name": "csrrw"}, {"name": "csrrs"}, {"name": "csrrc"}],
+	 "instructions": [{"name": "CSRRW"}, {"name": "CSRRS"}, {"name": "CSRRC"}],
 	 "mappings": [
 	     {"traceValue": "code", "description": "$code"},
 	     {"traceValue": "pc", "description": "$pc"},
@@ -136,7 +137,7 @@
 	},
 
 	{"name": "CSR_Imm_I_Type",
-	 "instructions": [{"name": "csrrwi"}, {"name": "csrrsi"}, {"name": "csrrci"}],
+	 "instructions": [{"name": "CSRRWI"}, {"name": "CSRRSI"}, {"name": "CSRRCI"}],
 	 "mappings": [
 	     {"traceValue": "code", "description": "$code"},
 	     {"traceValue": "pc", "description": "$pc"},
@@ -148,7 +149,7 @@
 	},
 
 	{"name": "Branch_B_Type",
-	 "instructions": [{"name": "beq"}, {"name": "bne"}, {"name": "blt"}, {"name": "bge"}, {"name": "bltu"}, {"name": "bgeu"}],
+	 "instructions": [{"name": "BEQ"}, {"name": "BNE"}, {"name": "BLT"}, {"name": "BGE"}, {"name": "BLTU"}, {"name": "BGEU"}],
 	 "mappings": [
 	     {"traceValue": "code", "description": "$code"},
 	     {"traceValue": "pc", "description": "$pc"},
@@ -161,7 +162,7 @@
 	},
 
 	{"name": "RegLoad_U_Type",
-	 "instructions": [{"name": "lui"}, {"name": "auipc"}],
+	 "instructions": [{"name": "LUI"}, {"name": "AUIPC"}],
 	 "mappings": [
 	     {"traceValue": "code", "description": "$code"},
 	     {"traceValue": "pc", "description": "$pc"},
