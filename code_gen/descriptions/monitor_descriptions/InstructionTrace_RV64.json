@@ -1,6 +1,6 @@
 {"trace": {
     "name": "InstructionTrace_RV64",
-	"coreName": "RV64IMACFD",
+    "core": "RV64IMACFD",
     "setId": "Automatic",
     "separator": ",",
     "traceValues": [
