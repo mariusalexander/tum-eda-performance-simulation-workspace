@@ -1,7 +1,7 @@
 {
     "trace": {
         "name": "CV32E40P",
-	"core": "RV32IMACFD",
+	    "coreName": "RV32IMACFD",
         "setId": "Manual",
         "traceValues": [
             {
@@ -886,7 +886,7 @@
                     },
                     {
                         "traceValue": "brTarget",
-                        "description": "$pc + $bitfield{imm}"
+                        "description": "$pc + (((int16_t)($bitfield{imm} << 3)) >>)"
                     },
                     {
                         "traceValue": "pc",
@@ -908,7 +908,7 @@
                     },
                     {
                         "traceValue": "brTarget",
-                        "description": "$pc + $bitfield{imm}"
+                        "description": "$pc + (((int16_t)($bitfield{imm} << 3)) >>)"
                     },
                     {
                         "traceValue": "pc",
@@ -930,7 +930,7 @@
                     },
                     {
                         "traceValue": "brTarget",
-                        "description": "$pc + $bitfield{imm}"
+                        "description": "$pc + (((int16_t)($bitfield{imm} << 3)) >>)"
                     },
                     {
                         "traceValue": "pc",
@@ -952,7 +952,7 @@
                     },
                     {
                         "traceValue": "brTarget",
-                        "description": "$pc + $bitfield{imm}"
+                        "description": "$pc + (((int16_t)($bitfield{imm} << 3)) >>)"
                     },
                     {
                         "traceValue": "pc",
@@ -974,7 +974,7 @@
                     },
                     {
                         "traceValue": "brTarget",
-                        "description": "$pc + $bitfield{imm}"
+                        "description": "$pc + (((int16_t)($bitfield{imm} << 3)) >>)"
                     },
                     {
                         "traceValue": "pc",
@@ -996,7 +996,7 @@
                     },
                     {
                         "traceValue": "brTarget",
-                        "description": "$pc + $bitfield{imm}"
+                        "description": "$pc + (((int16_t)($bitfield{imm} << 3)) >>)"
                     },
                     {
                         "traceValue": "pc",
@@ -1024,7 +1024,7 @@
                     },
                     {
                         "traceValue": "brTarget",
-                        "description": "$pc + $bitfield{imm}"
+                        "description": "$pc + (((int32_t)($bitfield{imm} << 11)) >> 11)"
                     },
                     {
                         "traceValue": "pc",
@@ -1046,7 +1046,7 @@
                     },
                     {
                         "traceValue": "brTarget",
-                        "description": "($reg{$bitfield{rs1}} + $bitfield{imm}) & -2U"
+                        "description": "($reg{$bitfield{rs1}} + (((int16_t)($bitfield{imm} << 4)) >> 4)) & -2U"
                     },
                     {
                         "traceValue": "pc",
