@@ -1,7 +1,7 @@
 {
     "trace": {
         "name": "CV32E40P",
-	    "coreName": "RV32IMACFD",
+	    "core": "RV32IMACFD",
         "setId": "Manual",
         "traceValues": [
             {
