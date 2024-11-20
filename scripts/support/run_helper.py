@@ -20,16 +20,16 @@ else:
 # Resolve TARGET_SW
 targetSW_failed = False
 targetSW_prefix = "PSW_TARGETSW_" + args.core.upper() + "_"
-#if len(split:=args.targetSW.split(":")) == 1:
-#   if split[0] == "dhry":
-#      targetSW = os.environ.get(targetSW_prefix + "DHRYSTONE")
-#   else:
-#      targetSW_failed = True
-if len(split:=args.targetSW.split(":")) == 2:
+if len(split:=args.targetSW.split(":")) == 1:
+   if split[0] == "dhry":
+      targetSW = os.environ.get(targetSW_prefix + "DHRYSTONE_DEFAULT")
+   else:
+      targetSW_failed = True
+elif len(split:=args.targetSW.split(":")) == 2:
    if split[0] == "em":
       targetSW = os.environ.get(targetSW_prefix + "EMBENCH") + "/" + split[1]
-   #elif split[0] == "dhry":
-   #   targetSW = os.environ.get(targetSW_prefix + "DHRYSTONE_OFFSET") + "-" + split[1]
+   elif split[0] == "dhry":
+      targetSW = os.environ.get(targetSW_prefix + "DHRYSTONE_OFFSET") + "-" + split[1]
    else:
       targetSW_failed = True
 else:
