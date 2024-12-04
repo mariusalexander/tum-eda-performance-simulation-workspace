@@ -1,8 +1,4 @@
 *~
-*.c
-*.o
-*.so
-*.cpp
-*.h
-*.model
-temp_del
+*#
+code_gen/out
+code_gen/temp
