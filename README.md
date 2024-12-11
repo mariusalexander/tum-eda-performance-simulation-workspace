@@ -49,4 +49,23 @@ Example: Run an instruction simulation (without performance estimation) for the 
 
 ### Code Generation
 
-Please refer to the README of the M2-ISA-R-Perf tool. The generated code must be deployed to the SoftwareEvalLib plugin of the etiss-perf-sim.
+Example: Generate performance estimator from corePerfDsl description, deploy it and re-install ETISS:
+
+      $ ./scripts/code_gen.sh ./code_gen/descriptions/core_perf_dsl/CV32E40P.corePerfDsl
+
+Example: Generate trace printer from monitor description, deploy it and re-install ETISS:
+
+      $ ./scripts/code_gen.sh ./code_gen/descriptions/monitor_descriptions/InstructionTrace_RV64.json
+
+## Version
+
+This is version v0.1.
+
+It is compatible with the following submodule versions:
+
+| Submodule | Version |
+| etiss-perf-sim | v0.9 |
+| M2-ISA-R | WiP |
+| M2-ISA-R-Perf | v1.1 |
+| etiss_arch_riscv | WiP |
+| CorePerfDSL-Examples | v1.0 |
