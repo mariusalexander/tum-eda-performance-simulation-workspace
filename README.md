@@ -16,9 +16,10 @@ Clone this repository and navigate to its top folder. (The given example uses an
       $ git clone git@github.com:tum-ei-eda/PerformanceSimulation_workspace.git <YOUR_WORKSPACE_NAME>
       $ cd <YOUR_WORKSPACE_NAME>
 
-NOTE: This workspace repository is currently work-in-progress (WiP). Make sure to switch to the main branch for the most recent updates:
+Switch to the latest release version:
 
-      $ git checkout main
+      $ git fetch --tags
+      $ git checkout tags/v0.1
 
 Initialize required git-submodules:
 
@@ -59,11 +60,12 @@ Example: Generate trace printer from monitor description, deploy it and re-insta
 
 ## Version
 
-This is version v0.1.
+The latest release version of this repository is v0.1
 
 It is compatible with the following submodule versions:
 
 | Submodule | Version |
+| --------- | ------- |
 | etiss-perf-sim | v0.9 |
 | M2-ISA-R | WiP |
 | M2-ISA-R-Perf | v1.1 |
