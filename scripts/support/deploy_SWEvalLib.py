@@ -19,6 +19,8 @@
 import argparse
 import pathlib
 import shutil
+import subprocess
+import os
 
 ######################################### SUPPORT FUNCTIONS #########################################
 
@@ -34,50 +36,6 @@ def getFiles(dir_, suffix_):
         if file_i.is_file() and (file_i.suffix == suffix_):
             files.append(file_i)
     return files
-
-def checkTargetDir(dir_):
-    if not dir_.is_dir():
-        dir_.mkdir(parents=True)
-
-def writeCMakeLists(dir_, lib_, files_):
-    cmake_file = dir_ / "CMakeLists.txt"
-
-    # Check if file exists and print warning
-    if cmake_file.is_file():
-        print("WARNING: Overwriting CMakeLists: " + str(cmake_file))
-
-    # Write file
-    with cmake_file.open('w') as f:
-        f.write("TARGET_SOURCES(" + lib_.upper() + " PRIVATE\n")
-        for file_i in files_:
-            f.write("\tsrc/" + file_i.name + "\n")
-        f.write(")\n\n")
-        f.write("TARGET_INCLUDE_DIRECTORIES(" + lib_.upper() + " PRIVATE\n")
-        f.write("\tinclude\n")
-        f.write(")")
-
-def copyFiles(files_, targetDir_):
-    for file_i in files_:
-        print(" > Copy: " + file_i.name + " to " + str(targetDir_) + " ...", end='')
-        shutil.copyfile(file_i, (targetDir_ / file_i.name))
-        print("Done.")
-
-
-def deploy(targetLib_, subLib_, modelName_, fileDict_):
-
-    # Make sure target directory and sub directories exist
-    targetDir = targetLib_ / "libs" / subLib_ / "variants" / modelName_
-    targetDir_include = targetDir / "include"
-    targetDir_src = targetDir / "src"
-    checkTargetDir(targetDir_include)
-    checkTargetDir(targetDir_src)
-
-    # Create or over-write CMakeLists
-    writeCMakeLists(targetDir, ("SWEVAL_" + subLib_.upper() + "_LIB"), fileDict_["src"])
-
-    # Copy files to backend
-    copyFiles(fileDict_["include"], targetDir_include)
-    copyFiles(fileDict_["src"], targetDir_src)
         
 ######################################### MAIN ROUTINE #########################################
 
@@ -85,12 +43,9 @@ def deploy(targetLib_, subLib_, modelName_, fileDict_):
 
 argParser = argparse.ArgumentParser()
 argParser.add_argument("sourceDir", help="Path to source directory containing files for deployment")
-argParser.add_argument("targetLib", help="Path to target SWEvalLib")
 args = argParser.parse_args()
 
 sourceDir = pathlib.Path(args.sourceDir).resolve()
-targetLib = pathlib.Path(args.targetLib).resolve()
-
 
 ## GATHER SOURCE FILES ##
 
@@ -114,5 +69,22 @@ for dir_i in (sourceDir / "code").iterdir():
 
 ## DEPLOY FILES ##
 
-deploy(targetLib, "backends", modelName, backendFiles)
-deploy(targetLib, "monitors", modelName, monitorFiles)
+targetLibScripts = os.environ.get("PSW_SWEVAL_LIB_SCRIPTS")
+
+# Deploy backend files
+deploy_backend = targetLibScripts + "/deploy_backend.py"
+
+run_deploy_backend = [deploy_backend, modelName]
+run_deploy_backend.extend([str(f) for f in backendFiles["include"]])
+run_deploy_backend.extend([str(f) for f in backendFiles["src"]])
+
+subprocess.run(run_deploy_backend, check=True)
+
+# Deploy monitor files
+deploy_monitor = targetLibScripts + "/deploy_monitor.py"
+
+run_deploy_monitor = [deploy_monitor, modelName]
+run_deploy_monitor.extend([str(f) for f in monitorFiles["include"]])
+run_deploy_monitor.extend([str(f) for f in monitorFiles["src"]])
+
+subprocess.run(run_deploy_monitor, check=True)

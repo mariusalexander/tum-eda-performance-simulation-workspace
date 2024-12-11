@@ -146,10 +146,6 @@ for tempVar_i in dumpDir.iterdir():
 # Remove temp directory
 shutil.rmtree(dumpDir)
 
-#m2isar_run = os.environ.get("PSW_SCRIPTS_SUPPORT") + "/m2isar_run_wrapper.sh"
-#for monitor_i in monitorDescriptionList:
-#    subprocess.run([m2isar_run, "trace_gen", str(monitor_i), str(m2isarModel), ("-o=" + os.environ.get("PSW_CODE_GEN_OUT"))], check=True)
-
    
 ####################################### DEPLOY GENERATED CODE #######################################
 
@@ -158,12 +154,9 @@ if not variantDirList:
 
 deploy_run = os.environ.get("PSW_SCRIPTS_SUPPORT") + "/deploy_SWEvalLib.py"
 
-#sourceDir = os.environ.get("PSW_CODE_GEN_OUT") + "/CV32E40P"
-#targetLib = os.environ.get("PSW_PERF_SIM") + "/etiss_plugins/SoftwareEvalLib"
-
 for variant_i in variantDirList:
     print("Deploying: " + variant_i.name)
-    subprocess.run([deploy_run, variant_i, os.environ.get("PSW_SWEVAL_LIB")], check=True)
+    subprocess.run([deploy_run, variant_i], check=True)
 
 
 ####################################### RE_BUILD ETISS #######################################
