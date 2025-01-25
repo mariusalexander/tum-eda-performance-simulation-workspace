@@ -125,7 +125,10 @@ m2isar_run = os.environ.get("PSW_SCRIPTS_SUPPORT") + "/m2isar_run_wrapper.sh"
 for monitor_i in monitorDescriptionList:
     subprocess.run([m2isar_run, "trace_gen", str(monitor_i), str(m2isarModel), ("-o=" + str(dumpDir))],check=True)
 
-# Extract generated variant files (e.g.: CV32E40P) and copy them to output directory
+# change dumpDir to dumpDir/code
+dumpDir = dumpDir / "code"
+
+# # Extract generated variant files (e.g.: CV32E40P) and copy them to output directory
 for tempVar_i in dumpDir.iterdir():
     if tempVar_i.is_dir():
 
@@ -146,8 +149,8 @@ for tempVar_i in dumpDir.iterdir():
 # Remove temp directory
 shutil.rmtree(dumpDir)
 
-#m2isar_run = os.environ.get("PSW_SCRIPTS_SUPPORT") + "/m2isar_run_wrapper.sh"
-#for monitor_i in monitorDescriptionList:
+# m2isar_run = os.environ.get("PSW_SCRIPTS_SUPPORT") + "/m2isar_run_wrapper.sh"
+# for monitor_i in monitorDescriptionList:
 #    subprocess.run([m2isar_run, "trace_gen", str(monitor_i), str(m2isarModel), ("-o=" + os.environ.get("PSW_CODE_GEN_OUT"))], check=True)
 
    
@@ -168,5 +171,14 @@ for variant_i in variantDirList:
 
 ####################################### RE_BUILD ETISS #######################################
 
-rebuild_run = os.environ.get("PSW_PERF_SIM") + "/rebuild.sh"
-subprocess.run([rebuild_run], check=True)
+# rebuild_run = os.environ.get("PSW_PERF_SIM") + "/rebuild.sh"
+# subprocess.run([rebuild_run], check=True)
+
+# change directory to etiss-perf-sim/etiss/build_dir/
+os.chdir(os.environ.get("PSW_PERF_SIM") + "/etiss/build_dir/")
+# print working directory
+print(os.getcwd())
+# run make -j$(nproc) install
+subprocess.run(["make", "-j16", "install"], check=True)
+# change directory back to performance simulation workspace
+os.chdir(os.environ.get("PSW_PERF_SIM"))
