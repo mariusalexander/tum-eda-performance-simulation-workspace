@@ -2,3 +2,9 @@
 *#
 code_gen/out
 code_gen/temp
+*.cpp
+*.h
+*.txt
+*.c
+*.o 
+*.so
