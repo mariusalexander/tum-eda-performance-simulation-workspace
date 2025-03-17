@@ -12,7 +12,7 @@ ${PSW_PERF_SIM}/setup_simulator.sh
 cd ${PSW_M2ISAR}
 python3 -m venv venv
 source venv/bin/activate
-pip install -e .
+pip install git+https://github.com/tum-ei-eda/M2-ISA-R@coredsl2
 deactivate
 
 # Setup M2-ISA-R-Perf
