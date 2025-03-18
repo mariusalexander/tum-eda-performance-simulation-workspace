@@ -6,7 +6,7 @@
 	url = git@github.com:tum-ei-eda/M2-ISA-R-Perf.git
 [submodule "code_gen/generators/M2-ISA-R"]
 	path = code_gen/generators/M2-ISA-R
-	url = git@github.com:KK-4595/M2-ISA-R.git
+	url = git@github.com:tum-ei-eda/M2-ISA-R.git
 [submodule "code_gen/descriptions/core_dsl/etiss_arch_riscv"]
 	path = code_gen/descriptions/core_dsl/etiss_arch_riscv
 	url = git@github.com:tum-ei-eda/etiss_arch_riscv.git

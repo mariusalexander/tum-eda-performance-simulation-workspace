@@ -5,12 +5,18 @@ set -e
 # Source environment
 . $(dirname "${0}")/../.env
 
+# Check requirements
+if ! command -v python3.10 &> /dev/null; then
+    echo "Error: Python3.10 (Currently required by M2-ISA-R) is not installed on this system. Install it and try again."
+    exit 1
+fi
+
 # Setup etiss-perf-sim
 ${PSW_PERF_SIM}/setup_simulator.sh
 
 # Setup M2-ISA-R
 cd ${PSW_M2ISAR}
-python3 -m venv venv
+python3.10 -m venv venv
 source venv/bin/activate
 pip install -e .
 deactivate
