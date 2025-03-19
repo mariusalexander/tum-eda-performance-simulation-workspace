@@ -19,7 +19,7 @@ Clone this repository and navigate to its top folder. (The given example uses an
 Switch to the latest release version:
 
       $ git fetch --tags
-      $ git checkout tags/v0.1
+      $ git checkout tags/v0.2
 
 Initialize required git-submodules:
 
@@ -60,14 +60,14 @@ Example: Generate trace printer from monitor description, deploy it and re-insta
 
 ## Version
 
-The latest release version of this repository is v0.1
+The latest release version of this repository is v0.2
 
 It is compatible with the following submodule versions:
 
 | Submodule | Version |
 | --------- | ------- |
-| etiss-perf-sim | v0.9 |
+| etiss-perf-sim | v0.10 |
 | M2-ISA-R | WiP |
-| M2-ISA-R-Perf | v1.1 |
+| M2-ISA-R-Perf | v2.0 |
 | etiss_arch_riscv | WiP |
-| CorePerfDSL-Examples | v1.0 |
+| CorePerfDSL-Examples | v2.0 |
