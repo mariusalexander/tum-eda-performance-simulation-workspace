@@ -23,6 +23,11 @@ targetSW_prefix = "PSW_TARGETSW_" + args.core.upper() + "_"
 if len(split:=args.targetSW.split(":")) == 1:
    if split[0] == "dhry":
       targetSW = os.environ.get(targetSW_prefix + "DHRYSTONE_DEFAULT")
+   elif split[0] == "float":
+      if args.core.upper() == "CVA6":
+         targetSW = os.environ.get(targetSW_prefix + "FLOAT")
+      else:
+         raise RuntimeError(f"Target-SW float is currently not supported for {args.core.upper()}")
    else:
       targetSW_failed = True
 elif len(split:=args.targetSW.split(":")) == 2:

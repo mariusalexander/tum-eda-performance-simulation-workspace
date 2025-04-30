@@ -1,0 +1,234 @@
+{"trace": {
+    "name": "InstructionTrace_RV64IMF_Zicsr",
+    "core": "RV64IMACFD",
+    "setId": "Automatic",
+    "separator": ",",
+    "traceValues": [
+	{"name": "pc"},
+	{"name": "code"},
+	{"name": "assembly", "type": "string", "size": 75},
+	{"name": "imm"},
+	{"name": "rs1_data"},
+	{"name": "rs2_data"},
+	{"name": "rs3_data"},
+	{"name": "rd_data"},
+	{"name": "jump_pc"},
+	{"name": "csr"},
+	{"name": "csr_reg"},
+	{"name": "mem_addr"}
+    ],
+
+    "instructions": [
+
+	{"name": "_DEF", "mappings": [
+	    {"traceValue": "code", "description": "$code"},
+	    {"traceValue": "pc", "description": "$pc"},
+	    {"traceValue": "assembly", "description": "$asm"}
+	]},
+
+	{"name": "JAL", "mappings":[
+	    {"traceValue": "code", "description": "$code"},
+	    {"traceValue": "pc", "description": "$pc"},
+	    {"traceValue": "assembly", "description": "$asm"},
+	    {"traceValue": "imm", "description": "$bitfield{imm}"},
+	    {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"},
+	    {"traceValue": "jump_pc", "description": "$pc", "position": "post"}
+	]},
+
+	{"name": "JALR", "mappings":[
+	    {"traceValue": "code", "description": "$code"},
+	    {"traceValue": "pc", "description": "$pc"},
+	    {"traceValue": "assembly", "description": "$asm"},
+	    {"traceValue": "imm", "description": "$bitfield{imm}"},
+	    {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	    {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"},
+	    {"traceValue": "jump_pc", "description": "$pc", "position": "post"}
+	]}
+    ],
+
+    "instructionGroups": [
+
+	{"name": "Reg_Reg_Type",
+	 "instructions": [{"name": "ADD"}, {"name": "SUB"}, {"name": "SLL"}, {"name": "SLT"}, {"name": "SLTU"}, {"name": "XOR"}, {"name": "SRL"}, {"name": "SRA"}, {"name": "OR"}, {"name": "AND"}, {"name": "ADDW"}, {"name": "SUBW"}, {"name": "SLLW"}, {"name": "SRLW"}, {"name": "SRAW"}, {"name": "MUL"}, {"name": "MULH"}, {"name": "MULHSU"}, {"name": "MULHU"}, {"name": "DIV"}, {"name": "DIVU"}, {"name": "REM"}, {"name": "REMU"}, {"name": "MULW"}, {"name": "DIVW"}, {"name": "DIVUW"}, {"name": "REMW"}, {"name": "REMUW"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rs2_data", "description": "$reg{$bitfield{rs2}}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"}
+	 ]
+	},
+
+	{"name": "Reg_Imm_Type",
+	 "instructions": [{"name": "ADDI"}, {"name": "SLTI"}, {"name": "SLTIU"}, {"name": "XORI"}, {"name": "ORI"}, {"name": "ANDI"}, {"name": "SLLI"}, {"name": "SRLI"}, {"name": "SRAI"}, {"name": "SLLIW"}, {"name": "SRLIW"}, {"name": "SRAIW"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"}
+	 ]
+	},
+
+	{"name": "F_Reg_Reg_Type",
+	 "instructions": [{"name": "FADD_S"}, {"name": "FSUB_S"}, {"name": "FMUL_S"}, {"name": "FDIV_S"}, {"name": "FMIN_S"}, {"name": "FMAX_S"}, {"name": "FSGNJ_S"}, {"name": "FSGNJN_S"}, {"name": "FSGNJX_S"}, {"name": "FEQ_S"}, {"name": "FLT_S"}, {"name": "FLE_S"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "rs1_data", "description": "((RV64IMACFD*)cpu)->F[$bitfield{rs1}ULL]"},
+	     {"traceValue": "rs2_data", "description": "((RV64IMACFD*)cpu)->F[$bitfield{rs2}ULL]"},
+	     {"traceValue": "rd_data", "description": "((RV64IMACFD*)cpu)->F[$bitfield{rd}ULL]", "position": "post"}
+	 ]
+	},
+
+	{"name": "F_Reg_Type",
+	 "instructions": [{"name": "FSQRT_S"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "rs1_data", "description": "((RV64IMACFD*)cpu)->F[$bitfield{rs1}ULL]"},
+	     {"traceValue": "rd_data", "description": "((RV64IMACFD*)cpu)->F[$bitfield{rd}ULL]", "position": "post"}
+	 ]
+	},
+
+	{"name": "F_Reg_Reg_Reg_Type",
+	 "instructions": [{"name": "FMADD_S"}, {"name": "FMSUB_S"}, {"name": "FNMADD_S"}, {"name": "FNMSUB_S"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "rs1_data", "description": "((RV64IMACFD*)cpu)->F[$bitfield{rs1}ULL]"},
+		 {"traceValue": "rs2_data", "description": "((RV64IMACFD*)cpu)->F[$bitfield{rs2}ULL]"},
+		 {"traceValue": "rs3_data", "description": "((RV64IMACFD*)cpu)->F[$bitfield{rs3}ULL]"},
+	     {"traceValue": "rd_data", "description": "((RV64IMACFD*)cpu)->F[$bitfield{rd}ULL]", "position": "post"}
+	 ]
+	},
+
+	{"name": "Load_Type",
+	 "instructions": [{"name": "LB"}, {"name": "LH"}, {"name": "LW"}, {"name": "LBU"}, {"name": "LHU"}, {"name": "LWU"}, {"name": "LD"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"},
+	     {"traceValue": "mem_addr", "description": "$reg{$bitfield{rs1}ULL} + $bitfield{imm}LL"}
+	 ]
+	},
+
+	{"name": "F_Load_Type",
+	"instructions": [{"name": "FLW"}],
+	"mappings":[
+		{"traceValue": "code", "description": "$code"},
+		{"traceValue": "pc", "description": "$pc"},
+		{"traceValue": "assembly", "description": "$asm"},
+		{"traceValue": "imm", "description": "$bitfield{imm}"},
+		{"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+		{"traceValue": "rd_data", "description": "((RV64IMACFD*)cpu)->F[$bitfield{rd}ULL]", "position": "post"},
+		{"traceValue": "mem_addr", "description": "$reg{$bitfield{rs1}ULL} + $bitfield{imm}LL"}
+	]
+	},
+
+	{"name": "Store_Type",
+	 "instructions": [{"name": "SB"}, {"name": "SH"}, {"name": "SW"}, {"name": "SD"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rs2_data", "description": "$reg{$bitfield{rs2}}"},
+	     {"traceValue": "mem_addr", "description": "$reg{$bitfield{rs1}ULL} + $bitfield{imm}LL"}
+	 ]
+	},
+
+	{"name": "F_Store_Type",
+	 "instructions": [{"name": "FSW"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rs2_data", "description": "(etiss_uint32)(((RV64IMACFD*)cpu)->F[$bitfield{rs2}ULL])"},
+	     {"traceValue": "mem_addr", "description": "$reg{$bitfield{rs1}ULL} + $bitfield{imm}LL"}
+	 ]
+	},
+
+	{"name": "CSR_Type",
+	 "instructions": [{"name": "CSRRW"}, {"name": "CSRRS"}, {"name": "CSRRC"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "csr", "description": "$bitfield{csr}"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"},
+	     {"traceValue": "csr_reg", "description": "$csr{$bitfield{csr}}", "position": "post"}
+	 ]
+	},
+
+	{"name": "CSR_Imm_Type",
+	 "instructions": [{"name": "CSRRWI"}, {"name": "CSRRSI"}, {"name": "CSRRCI"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "csr", "description": "$bitfield{csr}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"}
+	 ]
+	},
+
+	{"name": "Branch_Type",
+	 "instructions": [{"name": "BEQ"}, {"name": "BNE"}, {"name": "BLT"}, {"name": "BGE"}, {"name": "BLTU"}, {"name": "BGEU"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rs2_data", "description": "$reg{$bitfield{rs2}}"},
+	     {"traceValue": "jump_pc", "description": "$pc", "position": "post"}
+	 ]
+	},
+
+	{"name": "RegLoad_U_Type",
+	 "instructions": [{"name": "LUI"}, {"name": "AUIPC"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "imm", "description": "$bitfield{imm}"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"}
+	 ]
+	},
+
+	{"name": "F_F2X_Type",
+	 "instructions": [{"name": "FCVT_W_S"}, {"name": "FCVT_WU_S"}, {"name": "FMV_X_W"}, {"name": "FCLASS_S"}, {"name": "FCVT_L_S"}, {"name": "FCVT_LU_S"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "rs1_data", "description": "((RV64IMACFD*)cpu)->F[$bitfield{rs1}ULL]"},
+	     {"traceValue": "rd_data", "description": "$reg{$bitfield{rd}}", "position": "post"}
+	 ]
+	},
+
+	{"name": "F_X2F_Type",
+	 "instructions": [{"name": "FCVT_S_W"}, {"name": "FCVT_S_WU"}, {"name": "FMV_W_X"}, {"name": "FCVT_S_L"}, {"name": "FCVT_S_LU"}],
+	 "mappings": [
+	     {"traceValue": "code", "description": "$code"},
+	     {"traceValue": "pc", "description": "$pc"},
+	     {"traceValue": "assembly", "description": "$asm"},
+	     {"traceValue": "rs1_data", "description": "$reg{$bitfield{rs1}}"},
+	     {"traceValue": "rd_data", "description": "((RV64IMACFD*)cpu)->F[$bitfield{rd}ULL]", "position": "post"}
+	 ]
+	}
+    ]
+}}
