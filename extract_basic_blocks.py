@@ -162,7 +162,7 @@ def main():
 
     argParser = argparse.ArgumentParser()
     argParser.add_argument("--asm", nargs="?", type=path_type, const=True, help="Directory to assembly traces.")
-    argParser.add_argument("-c", "--cut-off", nargs="?", type=int, const=100, help="Filters any basic block that was entered at least this often.")
+    argParser.add_argument("-c", "--cut-off", nargs="?", type=int, const=100, default=100, help="Filters any basic block that was entered at least this often.")
     argParser.add_argument("-p", "--print", action="store_true", help="If flag is set, all basic blocks that match the cut-off are printed to stdout.")
     argParser.add_argument("--export_asm", nargs=1, type=dir_type, help="...")
     argParser.add_argument("path", type=path_type, help="Directory to instruction trace or extracted basic blocks.")
@@ -188,10 +188,10 @@ def main():
     if is_trace_directory:
         # parse traces and extract basic blocks
         basic_blocks = extract_basic_blocks_from_traces(path)
-        outpath = os.path.dirname(f"{path}/").decode('utf-8')
+        outpath = os.path.dirname(f"{path}/") #.decode('utf-8')
         export_basic_blocks(f"{outpath}_basic_blocks.csv", basic_blocks)
     else:
-        # read basic blocks from csv file 
+        # read basic blocks from csv file
         basic_blocks = extract_basic_blocks_csv(path)
 
     total_instructions = count_total_instructions(basic_blocks)
