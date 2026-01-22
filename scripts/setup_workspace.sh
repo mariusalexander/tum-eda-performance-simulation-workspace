@@ -6,8 +6,11 @@ set -e
 . $(dirname "${0}")/../.env
 
 # Check requirements
-if ! command -v python3.10 &> /dev/null; then
-    echo "Error: Python3.10 (Currently required by M2-ISA-R) is not installed on this system. Install it and try again."
+version=$(python3 --version 2>&1) # e.g. yields Python 3.10.5
+minor=${version#*.} # extracts 10.5
+minor=${minor%%.*}  # extracts 10
+if [ $minor -lt 10 ]; then
+    echo "Error: Python3.10 or higher is required by M2-ISA-R). Please update your Python installation."
     exit 1
 fi
 
@@ -16,7 +19,7 @@ ${PSW_PERF_SIM}/setup_simulator.sh
 
 # Setup M2-ISA-R
 cd ${PSW_M2ISAR}
-python3.10 -m venv venv
+python3 -m venv venv
 source venv/bin/activate
 pip install -e .
 deactivate
