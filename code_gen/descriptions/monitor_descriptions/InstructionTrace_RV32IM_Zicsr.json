@@ -6,7 +6,7 @@
     "traceValues": [
 	{"name": "pc"},
 	{"name": "code"},
-	{"name": "assembly", "type": "string", "size": 50},
+	{"name": "assembly", "type": "string", "size": 100},
 	{"name": "imm"},
 	{"name": "rs1_data"},
 	{"name": "rs2_data"},
