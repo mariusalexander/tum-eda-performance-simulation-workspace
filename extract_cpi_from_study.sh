@@ -5,7 +5,7 @@ set -e
 
 # Repeat given char 80 times using shell function
 repeat(){
-    for i in {1..80}; do echo -n "$1"; done
+    for i in $(seq 1 $2); do echo -n "$1"; done
 }
 
 # parse cores and benchmarks
@@ -19,7 +19,7 @@ for core in $cores; do
     core=$(basename $core)
     printf "%-10s\t" "${core#*_H_}"
 done
-printf "diff\n%s\n" $(repeat "-")
+printf "diff\n%s\n" $(repeat "-" 80)
 
 # print table (each row is an embench)
 for embench in $embenchs; do

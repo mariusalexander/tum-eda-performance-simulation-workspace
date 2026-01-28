@@ -5,7 +5,7 @@ set -e
 
 core=$1
 embench=$2
-workspace="workspace"
+workspace=$(dirname $0)
 
 echo "core = $1; embench = $embench"
 

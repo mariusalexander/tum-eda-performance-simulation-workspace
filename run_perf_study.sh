@@ -4,7 +4,7 @@
 set -e
 
 cores="SimpleRISCV_H_nfw_StaBrPred SimpleRISCV_H_fw_StaBrPred"
-workspace="workspace"
+workspace=$(dirname 0)
 embenchs=$(ls $workspace/target_sw/examples/cv32e40p/embench/)
 
 for core in $cores; do
