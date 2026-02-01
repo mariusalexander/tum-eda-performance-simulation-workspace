@@ -8,10 +8,20 @@ repeat(){
     for i in $(seq 1 $2); do printf "$1"; done
 }
 
+core=$1
 workspace=$(dirname $0)
+traces="traces"
+
+path="$traces/$core"
+
+# check if core is valid by checking if .ini file exists
+if [ ! -d $path ]; then
+    echo "Core '$core' is invalid!"
+    exit 1
+fi
+
 m2isarperf="$workspace/code_gen/generators/M2-ISA-R-Perf"
 source "$m2isarperf/venv/bin/activate"
-core="SimpleRISCV_H_nfw_StaBrPred"
 
 # parse cores and benchmarks
 embenchs=$(ls traces/$core)

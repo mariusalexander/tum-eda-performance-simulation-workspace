@@ -3,7 +3,8 @@
 # exit if error occures
 set -e
 
-cores="SimpleRISCV_H_nfw_StaBrPred SimpleRISCV_H_fw_StaBrPred"
+cores=$(for br in No Sta Dyn; do for fw in nfw fw; do printf "SimpleRISCV_H_${fw}_${br}BrPred "; done; done)
+
 workspace=$(dirname 0)
 embenchs=$(ls $workspace/target_sw/examples/cv32e40p/embench/)
 

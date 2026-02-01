@@ -5,37 +5,52 @@ set -e
 
 # Repeat given char 80 times using shell function
 repeat(){
-    for i in $(seq 1 $2); do echo -n "$1"; done
+    for i in $(seq 1 $2); do printf $1; done
 }
 
-# parse cores and benchmarks
-cores=$(ls -d traces/Simple*)
+traces="traces_old"
+# construct list of cores (only nfw)
+cores=$(for br in No Sta Dyn; do printf "SimpleRISCV_H_nfw_${br}BrPred "; done)
+# check which trace directories exist
+cores=$(for core in $cores; do if [ -d "$traces/$core" ]; then printf "$core "; fi; done)
+
 set -- $cores
-embenchs=$(ls $1)
+embenchs=$(ls $traces/$1)
 
 # print header
-printf "%16s\t" "embench"
+printf "%20s | " "embench"
 for core in $cores; do
     core=$(basename $core)
-    printf "%-10s\t" "${core#*_H_}"
+    printf "%-15s" "${core#*_H_}"
+    core=${core/_nfw_/_fw_}
+    printf "%-15s" "${core#*_H_}"
+    printf "%-10s | " "diff"
 done
-printf "diff\n%s\n" $(repeat "-" 80)
+
+# print hline
+array=($cores)
+len=${#array[@]}
+printf "\n%s\n" $(repeat "-" $((23+len*43)))
 
 # print table (each row is an embench)
 for embench in $embenchs; do
-    printf -- "%16s\t" $embench
+    printf -- "%20s | " $embench
     filename="${embench}_cpi.txt"
     # each core is a column
-    for core in $cores; do
-        path="$core/$embench/"
-        # extract cpi from log and save to a file
-        $(cat $path/${embench}_log.txt | grep -P 'processor cycles per instruction: .+' | grep -oP '\d+\.\d+' > $path/$filename)
-        # update cpi variables
-        last_cpi=$curr_cpi
-        curr_cpi=$(< $path/$filename)
-        printf "%-10s\t" $curr_cpi
+    for base_core in $cores; do
+        # iterate over "nfw" and "fw" variant
+        for core in $base_core ${core/_nfw_/_fw_}; do
+            path="$traces/$core/$embench/"
+            # extract cpi from log and save to a file
+            (grep -P 'processor cycles per instruction: .+' < $path/${embench}_log.txt | grep -oP '\d+\.\d+' > $path/$filename)
+            # update cpi variables
+            last_cpi=$curr_cpi
+            curr_cpi=$(< $path/$filename)
+            printf "%-15s" $curr_cpi
+        done
+        # print cpi diff
+        diff=$(echo "${curr_cpi}-${last_cpi}" | bc)
+        printf "%-10s | " $diff
     done
-    # print cpi diff
-    diff=$(echo "${curr_cpi}-${last_cpi}" | bc)
-    echo $diff
+    printf "\n"
 done

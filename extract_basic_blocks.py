@@ -200,8 +200,8 @@ def main():
     # path to performance traces, contains only br info
     elif args.tp is not None:
         [path] = args.tp
-        pc_idx = 0
-        br_target_idx = 1
+        pc_idx = 3
+        br_target_idx = 4
         delimiter = '|'
         check_filename = lambda f: f.endswith(".csv") and "_trace_" in f
     # path to extracted traces
