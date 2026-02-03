@@ -280,7 +280,7 @@ def main():
                     instruction = parse_asm(instruction)
                     print(f" -> {instruction[0]:<5} {', '.join([f"{r:<8}" for r in instruction[1]])}")
         if export_path is not None:
-            with open(f"{export_path}/{hex(bb_start)}.txt", 'w') as asm_file:
+            with open(f"{export_path}/{bb_start:08x}.txt", 'w') as asm_file:
                 asm_file.write("\n".join(assembly))
 
     if args.print:

@@ -4,8 +4,8 @@
 set -e
 
 # check whether to log traces
-if [ ! -z $3 ]; then
-    if [ $3 != "--traces" ]; then
+if [ ! -z $4 ]; then
+    if [ $4 != "--traces" ]; then
         echo "Unkown argument!"
         exit 1
     fi
@@ -15,7 +15,12 @@ fi
 core=$1
 embench=$2
 workspace=$(dirname $0)
-traces="traces"
+traces=$3
+
+if [ -z $traces ]; then
+   echo "Invalid path to traces!"
+   exit 1
+fi
 
 # check if core is valid by checking if .ini file exists
 if [[ ! -f "$workspace/etiss-perf-sim/simulator/ini/${core}.ini" ]] then

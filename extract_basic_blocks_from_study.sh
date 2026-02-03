@@ -3,24 +3,31 @@
 # exit if error occures
 set -e
 
-core=$1
 workspace=$(dirname $0)
-traces="traces"
-cutoff="0.02"
+config="$workspace/study_params.txt"
+path=$1
 
-path="$traces/$core"
+if [ ! -f $config ]; then
+    echo "Config file is missing!"
+    exit 2
+fi
 
-# check if core is valid by checking if .ini file exists
-if [ ! -d $path ]; then
-    echo "Core '$core' is invalid!"
+if [ -z $path ] || [ ! -d $path ]; then
+    echo "Invalid path to traces! ($path)"
     exit 1
 fi
 
 workspace=$(dirname 0)
-embenchs=$(ls $traces/$core)
-for embench in $embenchs; do
-    echo "Extracting basic blocks from '$embench'..."
+embenchs=($(cut -f1 -d',' < $config))
+cutoffs=($(cut -f2 -d',' < $config))
+for i in $(seq 1 ${#embenchs[@]} ); do
+    embench=${embenchs[((i-1))]}
+    cutoff=${cutoffs[((i-1))]}
     log_path="$path/$embench"
+    if [ ! -d $log_path ]; then
+        continue
+    fi
+    echo "Extracting basic blocks from '$embench' (cutoff = $cutoff)..."
     ta_path="$log_path/ta"
     tp_path="$log_path/tp"
     export_path="$log_path/export"

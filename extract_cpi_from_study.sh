@@ -8,11 +8,16 @@ repeat(){
     for i in $(seq 1 $2); do printf $1; done
 }
 
-traces="traces_old"
-# construct list of cores (only nfw)
+traces=$1
+if [ -z $traces ] || [ ! -d $traces ]; then
+    echo "Invalid path to traces! ($traces)"
+    exit 1
+fi
+
+# construct list of cores (only nfw cores)
 cores=$(for br in No Sta Dyn; do printf "SimpleRISCV_H_nfw_${br}BrPred "; done)
 # check which trace directories exist
-cores=$(for core in $cores; do if [ -d "$traces/$core" ]; then printf "$core "; fi; done)
+cores=$(for core in $cores; do if [ -d $traces/$core ]; then printf "$core "; fi; done)
 
 set -- $cores
 embenchs=$(ls $traces/$1)
