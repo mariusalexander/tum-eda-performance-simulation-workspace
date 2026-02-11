@@ -26,7 +26,6 @@ def extract_basic_blocks_from_traces(path, check_filename, pc_idx, br_target_idx
             next(reader) # skip header
             prev_pc = 0
             for row in reader:
-                #total_instructions += 1
                 col = row[br_target_idx].strip()
                 curr_pc = int(row[pc_idx], 16)
                 if col.startswith("-"):
@@ -168,6 +167,10 @@ def main():
             return int(num)
         else:
             return num
+        
+    def hex_number(num):
+        """" Enforces that an argument is a positive number """
+        return int(num, 16)
 
     argParser = argparse.ArgumentParser()
     argParser.add_argument("-tp" , nargs=1, type=exisiting_dir_type, help="Directory to performance traces.")
@@ -178,12 +181,14 @@ def main():
     argParser.add_argument("-p", "--print", action="store_true", help="If this flag is set, all basic blocks that match the cut-off are printed to stdout.")
     argParser.add_argument("-a", "--asm", action="store_true", help="If this flag is set and print is set, the assembly code is printed to stdout as well.")
     argParser.add_argument("-e", "--export", nargs=1, type=valid_path_type, help="Directory to export extracted basic blocks to.")
+    argParser.add_argument("--start", nargs=1, type=hex_number, help="...")
+    argParser.add_argument("--end", nargs=1, type=hex_number, help="...")
     args = argParser.parse_args()
 
     print(args)
 
     path = None
-    am_path = None
+    asm_path = None
     export_path = None
 
     do_extract_from_trace = True
@@ -228,7 +233,16 @@ def main():
 
     if args.asm and asm_path is None:
         argParser.error("Must provide directory to traces that contain the assembly code!")
-
+        
+    if (args.start is None) ^ (args.end is None):
+        argParser.error("Must specify start and end of bbs to extract!")
+        
+    if args.start is not None and args.end is not None:
+        [args.start] = args.start
+        [args.end]   = args.end
+        # override cutoff
+        args.cut_off = 1
+    
     if do_extract_from_trace:
         # parse traces and extract basic blocks
         basic_blocks = extract_basic_blocks_from_traces(path, check_filename=check_filename, pc_idx=pc_idx, br_target_idx=br_target_idx, delimiter=delimiter)
@@ -262,6 +276,8 @@ def main():
         instruction_count = ((bb_end - bb_start) // 4) + 1
         convered_instruction_count = instruction_count * call_count
         converd_percentage = (convered_instruction_count / total_instructions)
+        if args.start and (bb_start < args.start or bb_start > args.end):
+            continue
         # check number of calls to bb
         if not cut_off_by_percentage:
             if call_count < args.cut_off:
@@ -280,8 +296,14 @@ def main():
                     instruction = parse_asm(instruction)
                     print(f" -> {instruction[0]:<5} {', '.join([f"{r:<8}" for r in instruction[1]])}")
         if export_path is not None:
-            with open(f"{export_path}/{bb_start:08x}.txt", 'w') as asm_file:
-                asm_file.write("\n".join(assembly))
+            if args.start:
+                mode = 'w' if args.start == bb_start else 'a'
+                with open(f"{export_path}/{args.start:08x}.txt", mode) as asm_file:
+                    asm_file.write("\n".join(assembly))
+                    asm_file.write("\n")
+            else:
+                with open(f"{export_path}/{bb_start:08x}.txt", 'w') as asm_file:
+                    asm_file.write("\n".join(assembly))
 
     if args.print:
         print(f"-> Basic blocks cover {total_convered_instruction_count} of {total_instructions} instructions ({((total_convered_instruction_count / total_instructions) * 100):.5}%)")

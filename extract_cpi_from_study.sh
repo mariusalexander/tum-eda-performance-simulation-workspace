@@ -26,9 +26,9 @@ embenchs=$(ls $traces/$1)
 printf "%20s | " "embench"
 for core in $cores; do
     core=$(basename $core)
-    printf "%-15s" "${core#*_H_}"
+    printf "NFW %-11s" "${core##*_}"
     core=${core/_nfw_/_fw_}
-    printf "%-15s" "${core#*_H_}"
+    printf "FW %-12s" "${core##*_}"
     printf "%-10s | " "diff"
 done
 
@@ -44,7 +44,7 @@ for embench in $embenchs; do
     # each core is a column
     for base_core in $cores; do
         # iterate over "nfw" and "fw" variant
-        for core in $base_core ${core/_nfw_/_fw_}; do
+        for core in $base_core ${base_core/_nfw_/_fw_}; do
             path="$traces/$core/$embench/"
             # extract cpi from log and save to a file
             (grep -P 'processor cycles per instruction: .+' < $path/${embench}_log.txt | grep -oP '\d+\.\d+' > $path/$filename)
