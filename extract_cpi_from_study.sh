@@ -23,23 +23,24 @@ set -- $cores
 embenchs=$(ls $traces/$1)
 
 # print header
-printf "%20s | " "embench"
+printf "%20s , " "embench"
 for core in $cores; do
     core=$(basename $core)
-    printf "NFW %-11s" "${core##*_}"
+    printf "NFW %-11s, " "${core##*_}"
     core=${core/_nfw_/_fw_}
-    printf "FW %-12s" "${core##*_}"
-    printf "%-10s | " "diff"
+    printf "FW %-12s, " "${core##*_}"
+    printf "%-10s, " "diff"
 done
 
 # print hline
 array=($cores)
 len=${#array[@]}
-printf "\n%s\n" $(repeat "-" $((23+len*43)))
+#printf "\n%s\n" $(repeat "-" $((23+len*43)))
+printf "\n"
 
 # print table (each row is an embench)
 for embench in $embenchs; do
-    printf -- "%20s | " $embench
+    printf -- "%20s , " $embench
     filename="${embench}_cpi.txt"
     # each core is a column
     for base_core in $cores; do
@@ -51,11 +52,11 @@ for embench in $embenchs; do
             # update cpi variables
             last_cpi=$curr_cpi
             curr_cpi=$(< $path/$filename)
-            printf "%-15s" $curr_cpi
+            printf "%-15s, " $curr_cpi
         done
         # print cpi diff
         diff=$(echo "${curr_cpi}-${last_cpi}" | bc)
-        printf "%-10s | " $diff
+        printf "%-10s, " $diff
     done
     printf "\n"
 done

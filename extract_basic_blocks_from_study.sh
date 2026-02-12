@@ -32,7 +32,7 @@ for i in $(seq 1 ${#embenchs[@]} ); do
     tp_path="$log_path/tp"
     export_path="$log_path/export"
     log_path="$log_path/${embench}_bb_log.txt"
-    python3 $workspace/extract_basic_blocks.py -ta=$ta_path -tp=$tp_path -e=$export_path --print --cut-off=$cutoff | tee $log_path
+    python3 $workspace/extract_basic_blocks.py -ta=$ta_path -tp=$tp_path -e=$export_path --cut-off=$cutoff | tee $log_path
     if [ ${PIPESTATUS[0]} -ne 0 ]; then
         exit 1
     fi
