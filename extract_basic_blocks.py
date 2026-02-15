@@ -73,6 +73,7 @@ def extract_asm_from_traces(address_start, length, path, check_filename, pc_idx,
 
     directory = os.fsencode(path)
 
+    current_address = address_start
     assembly = []
     # find files
     for csv_file in os.listdir(directory):
@@ -84,18 +85,16 @@ def extract_asm_from_traces(address_start, length, path, check_filename, pc_idx,
         with open(filename, 'r') as csv_file:
             reader = csv.reader(csv_file, delimiter=delimiter)
             next(reader) # skip header
-            found_pc = False
             for row in reader:
-                pc  = int(row[pc_idx], 16)
-                if pc == address_start:
-                    found_pc = True
-                if found_pc:
-                    if length <= 0:
-                        return assembly
+                pc = int(row[pc_idx], 16)
+                if pc == current_address:
+                    current_address += 4
                     trace = row[asm_idx].strip()
                     assembly.append(trace)
                     length -= 1
-    raise RuntimeError(f"Failed to find assembly for '{hex(address_start)}'")
+                    if length <= 0:
+                        return assembly
+    raise RuntimeError(f"Failed to find assembly for '{hex(current_address)}' (missing {length})")
 
 def parse_asm(trace):
     idx = trace.index("#")
@@ -273,7 +272,7 @@ def main():
                 bb_end = bb_start
             else:
                 bb_end = basic_block_addresses[next_idx] - 4
-            if last_count == call_count:
+            if last_count == call_count and (last_end + 4) == bb_start:
                 last_end = bb_end
                 continue
             if last_count != 0:

@@ -17,11 +17,6 @@ embench=$2
 workspace=$(dirname $0)
 traces=$3
 
-if [ -z $traces ]; then
-   echo "Invalid path to traces!"
-   exit 1
-fi
-
 # check if core is valid by checking if .ini file exists
 if [[ ! -f "$workspace/etiss-perf-sim/simulator/ini/${core}.ini" ]] then
     echo "Core '$core' is invalid!"
@@ -38,6 +33,11 @@ if [[ ! -f "$embench_path" ]]; then
 fi
 
 echo "core = $1; embench = $embench"
+
+if [ -z $traces ]; then
+   echo "Invalid path to traces!"
+   exit 1
+fi
 
 # create target directories for log
 log_path="$traces/$core/$embench"
