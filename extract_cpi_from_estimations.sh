@@ -5,16 +5,16 @@ set -e
 
 # Repeat given char 80 times using shell function
 repeat(){
-    for i in $(seq 1 $2); do printf $1; done
+    for i in $(seq 1 $2); do printf "$1"; done
 }
 
 workspace=$(dirname $0)
 config_params="$workspace/study_params.txt"
 config_cores="$workspace/study_cores.txt"
 
-traces=$1
-if [ -z $traces ] || [ ! -d $traces ]; then
-    echo "Invalid path to traces!"
+path=$1
+if [ -z $path ] || [ ! -d $path ]; then
+    echo "Invalid path to traces of core! ($path)"
     exit 1
 fi
 
@@ -23,6 +23,11 @@ if [ ! -f $config_params ] || [ ! -f $config_cores ]; then
     exit 2
 fi
 
+m2isarperf="$workspace/code_gen/generators/M2-ISA-R-Perf"
+analyzer="$workspace/code_gen/code-analyzer"
+source "$analyzer/venv/bin/activate"
+
+# parse cores and benchmarks
 cores=$(cut -f1 -d',' < $config_cores)
 embenchs=$(cut -f1 -d',' < $config_params)
 
@@ -42,16 +47,14 @@ for core in $cores; do
 done
 printf "\b\b  \n"
 
-# print table (each row is an embench)
 for embench in $embenchs; do
     printf "%20s , " $embench
-    filename="${embench}_cpi.txt"
-
+    filename="${embench}_cpi_estimates.txt"
+    
     for core in $cores; do
-        path="$traces/$core/$embench"
-        # extract cpi from log and save to a file
-        (grep -P 'processor cycles per instruction: .+' < $path/${embench}_log.txt | grep -oP '\d+\.\d+' > $path/$filename)
-        curr_cpi=$(< $path/$filename)
+        log_path="$path/$core/$embench/${embench}_estimates_log.txt"
+        (grep -Po "total CPI:\s+\d+\.\d+" < $log_path | grep -Po "\d+\.\d+" > $path/$core/$embench/$filename)
+        curr_cpi=$(< $path/$core/$embench/$filename)
         printf "%-${max_len}s, " $curr_cpi
     done
     printf "\n"

@@ -4,27 +4,35 @@
 set -e
 
 workspace=$(dirname $0)
-config="$workspace/study_params.txt"
+config_params="$workspace/study_params.txt"
+config_cores="$workspace/study_cores.txt"
 
-if [ -z $1 ]; then
+traces=$1
+if [ -z $traces ]; then
     echo "Invalid path to traces!"
     exit 1
 fi
 
-if [ ! -f $config ]; then
-    echo "Config file is missing!"
+if [ ! -z $2 ]; then
+    if [ $2 != "--traces" ]; then
+        echo "Unknown argument '$2'!"
+        exit 1
+    fi
+    log_traces=$2 
+fi
+
+if [ ! -f $config_params ] || [ ! -f $config_cores ]; then
+    echo "Config file '$config_params' or '$config_cores' is missing!"
     exit 2
 fi
 
-cores=$(for br in No Sta Dyn; do for fw in nfw fw; do printf "SimpleRISCV_H_${fw}_${br}BrPred "; done; done)
-
-workspace=$(dirname 0)
-embenchs=($(cut -f1 -d',' < $config))
+cores=$(cut -f1 -d',' < $config_cores)
+embenchs=$(cut -f1 -d',' < $config_params)
 
 for core in $cores; do
     echo $core
-    for embench in ${embenchs[@]}; do
-        echo $embench
-        ./run_perf_study_for_core.sh $core $embench $1
+    for embench in $embenchs; do
+        echo -e "\n\n### $workspace/run_perf_study_for_core.sh $core $embench $traces $log_traces"
+        $workspace/run_perf_study_for_core.sh $core $embench $traces $log_traces
     done
 done

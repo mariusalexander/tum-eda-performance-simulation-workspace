@@ -37,7 +37,8 @@ for embench in $embenchs; do
     for core in $cores; do
         log_path="$path/$core/$embench/${embench}_estimates_log.txt"
         export_dir="$path/$core/$embench/export"
-        PYTHONPATH=$m2isarperf/m2isar_perf/ python3 $analyzer/main.py "$path/$core" --files "$export_dir/experiment.json" --cpi --no-dyn -b -p | tee "$log_path"
+        echo -e "\n\n### PYTHONPATH=$m2isarperf/m2isar_perf/ python3 $analyzer/main.py "$path/$core" --files "$export_dir/experiment.json" --cpi --no-dyn"
+        PYTHONPATH=$m2isarperf/m2isar_perf/ python3 $analyzer/main.py "$path/$core" --files "$export_dir/experiment.json" --cpi --no-dyn | tee "$log_path"
     done
     printf "\n\n"
 done

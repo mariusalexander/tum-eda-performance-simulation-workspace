@@ -3,19 +3,19 @@
 # exit if error occures
 set -e
 
+workspace=$(dirname $0)
+core=$1
+embench=$2
+traces=$3
+
 # check whether to log traces
 if [ ! -z $4 ]; then
     if [ $4 != "--traces" ]; then
-        echo "Unkown argument!"
+        echo "Unknown argument '$4'!"
         exit 1
     fi
     log_traces=1
 fi
-
-core=$1
-embench=$2
-workspace=$(dirname $0)
-traces=$3
 
 # check if core is valid by checking if .ini file exists
 if [[ ! -f "$workspace/etiss-perf-sim/simulator/ini/${core}.ini" ]] then
@@ -54,4 +54,5 @@ fi
 
 # execute simulation
 log_path="$log_path/${embench}_log.txt"
+echo -e "\n### $workspace/etiss-perf-sim/run_simulator.py $embench_path --core $core $args"
 $workspace/etiss-perf-sim/run_simulator.py $embench_path --core $core $args 2>&1 | tee $log_path

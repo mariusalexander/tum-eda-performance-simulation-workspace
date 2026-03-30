@@ -1,7 +1,7 @@
 import csv
-import sys
 import os
 import argparse
+import json
 from pathlib import Path
 
 def extract_basic_blocks_from_traces(path, check_filename, pc_idx, br_target_idx, delimiter=','):
@@ -12,6 +12,7 @@ def extract_basic_blocks_from_traces(path, check_filename, pc_idx, br_target_idx
     print(f"Parsing traces in '{path}'...")
     files = []
     basic_blocks = {}
+    pcs = set()
 
     # find files
     for csv_file in os.listdir(directory):
@@ -28,6 +29,7 @@ def extract_basic_blocks_from_traces(path, check_filename, pc_idx, br_target_idx
             for row in reader:
                 col = row[br_target_idx].strip()
                 curr_pc = int(row[pc_idx], 16)
+                pcs.add(curr_pc)
                 if col.startswith("-"):
                     if prev_pc + 4 != curr_pc:
                         basic_blocks[curr_pc] = 0
@@ -37,6 +39,7 @@ def extract_basic_blocks_from_traces(path, check_filename, pc_idx, br_target_idx
                 basic_blocks[int(row[br_target_idx], 16)] = 0
                 prev_pc = curr_pc
     print(f"-> Found {len(basic_blocks)} basic blocks!")
+    print(f"-> Counted {len(pcs)} unqiue instructions!")
 
     # count how often each basic blocks is used, accumulate assembly trace for basic block
     print("Extracting basic block usages...")
@@ -51,7 +54,7 @@ def extract_basic_blocks_from_traces(path, check_filename, pc_idx, br_target_idx
 
     return basic_blocks
 
-def extract_basic_blocks_csv(filepath):
+def extract_basic_blocks_from_csv(filepath):
     if not os.path.exists(filepath):
         raise ValueError(f"'{filepath}' does not exist!")
 
@@ -90,7 +93,7 @@ def extract_asm_from_traces(address_start, length, path, check_filename, pc_idx,
                 if pc == current_address:
                     current_address += 4
                     trace = row[asm_idx].strip()
-                    assembly.append(trace)
+                    assembly.append(f"0x{pc:08x}\t{trace}")
                     length -= 1
                     if length <= 0:
                         return assembly
@@ -172,13 +175,13 @@ def main():
         return int(num, 16)
 
     argParser = argparse.ArgumentParser()
-    argParser.add_argument("-tp" , nargs=1, type=exisiting_dir_type, help="Directory to performance traces.")
-    argParser.add_argument("-ta" , nargs=1, type=exisiting_dir_type, help="Directory to assembly traces.")
-    argParser.add_argument("-ti" , nargs=1, type=exisiting_dir_type, help="Directory to instruction traces.")
-    argParser.add_argument("-csv", nargs=1, type=exisiting_file_type, help="Directory to extracted basic blocks.")
+    argParser.add_argument("-tp" , nargs=1, type=exisiting_dir_type, help="Directory of performance traces.")
+    argParser.add_argument("-ta" , nargs=1, type=exisiting_dir_type, help="Directory of assembly traces.")
+    argParser.add_argument("-ti" , nargs=1, type=exisiting_dir_type, help="Directory of instruction traces.")
+    argParser.add_argument("-csv", nargs=1, type=exisiting_file_type, help="Directory of extracted basic blocks.")
     argParser.add_argument("-c", "--cut-off", nargs="?", type=positive_number, const=0.1, default=100, help="Filters any basic block that was entered at least this often.")
     argParser.add_argument("-a", "--asm", action="store_true", help="If this flag is set and print is set, the assembly code is printed to stdout as well.")
-    argParser.add_argument("-e", "--export", nargs=1, type=valid_path_type, help="Directory to export extracted basic blocks to.")
+    argParser.add_argument("-e", "--export", nargs=1, type=valid_path_type, help="Directory of export extracted basic blocks to.")
     argParser.add_argument("--start", nargs=1, type=hex_number, help="...")
     argParser.add_argument("--end", nargs=1, type=hex_number, help="...")
     args = argParser.parse_args()
@@ -226,8 +229,7 @@ def main():
         export_path = args.export[0]
         if asm_path is None:
             argParser.error("Must provide directory to traces that contain the assembly code!")
-        export_asm_path = Path(export_path)
-        export_asm_path.mkdir(exist_ok=True)
+        Path(export_path).mkdir(exist_ok=True)
 
     if args.asm and asm_path is None:
         argParser.error("Must provide directory to traces that contain the assembly code!")
@@ -245,7 +247,7 @@ def main():
         export_basic_blocks(f"{path}/../basic_blocks.csv", basic_blocks)
     else:
         # read basic blocks from csv file
-        basic_blocks = extract_basic_blocks_csv(path)
+        basic_blocks = extract_basic_blocks_from_csv(path)
 
     total_instructions = count_total_instructions(basic_blocks)
     basic_block_addresses = list(basic_blocks.keys())
@@ -291,7 +293,8 @@ def main():
             last_end   = bb_end
 
     total_convered_instruction_count = 0
-
+    
+    metadata = []
     # iterate over all basic blocks
     for bb_start, call_count, instruction_count in selection:
         bb_end = bb_start + ((instruction_count - 1) * 4)
@@ -308,14 +311,14 @@ def main():
                 print(f" -> {instruction[0]:<5} {', '.join([f"{r:<8}" for r in instruction[1]])}")
         if export_path is not None:
             assert assembly is not None
-            if args.start:
-                mode = 'w' if args.start == bb_start else 'a'
-                with open(f"{export_path}/{args.start:08x}.txt", mode) as asm_file:
-                    asm_file.write("\n".join(assembly))
-                    asm_file.write("\n")
-            else:
-                with open(f"{export_path}/{bb_start:08x}.txt", 'w') as asm_file:
-                    asm_file.write("\n".join(assembly))
+            with open(f"{export_path}/0x{bb_start:08x}.txt", 'w') as asm_file:
+                asm_file.write("\n".join(assembly))
+            metadata.append({
+                "name"   : f"0x{bb_start:08x}.txt",
+                "weight" : converd_percentage
+            })
+    with open(f"{export_path}/experiment.json", "w") as f:
+        f.write(json.dumps(metadata, indent=4))
 
     print(f"-> Basic blocks cover {total_convered_instruction_count} of {total_instructions} instructions ({((total_convered_instruction_count / total_instructions) * 100):.5}%)")
 
