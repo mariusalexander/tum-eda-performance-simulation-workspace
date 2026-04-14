@@ -18,7 +18,7 @@ def extract_basic_blocks_from_traces(path, check_filename, pc_idx, br_target_idx
     for csv_file in os.listdir(directory):
         filename = os.fsdecode(csv_file)
         if not check_filename(filename):
-            print(f"- skipping {filename}")
+            print(f"> skipping {filename}")
             continue
         filename = f"{path}/{filename}"
         files.append(filename)
@@ -38,8 +38,8 @@ def extract_basic_blocks_from_traces(path, check_filename, pc_idx, br_target_idx
                 basic_blocks[curr_pc + 4] = 0
                 basic_blocks[int(row[br_target_idx], 16)] = 0
                 prev_pc = curr_pc
-    print(f"-> Found {len(basic_blocks)} basic blocks!")
-    print(f"-> Counted {len(pcs)} unqiue instructions!")
+    print(f"> Found {len(basic_blocks)} basic blocks!")
+    print(f"> Counted {len(pcs)} unqiue instructions!")
 
     # count how often each basic blocks is used, accumulate assembly trace for basic block
     print("Extracting basic block usages...")
@@ -100,13 +100,17 @@ def extract_asm_from_traces(address_start, length, path, check_filename, pc_idx,
     raise RuntimeError(f"Failed to find assembly for '{hex(current_address)}' (missing {length})")
 
 def parse_asm(trace):
-    idx = trace.index("#")
-    instr_name = trace[:idx].strip()
-    idx = trace.index('[')
+    idx   = trace.index("#")
+    instr_name = trace[:idx]
+    print(trace, "->", instr_name)
+    idx   = instr_name.index("\t")
+    pc    = instr_name[:idx].strip()
+    instr_name = instr_name[idx+1:].strip()
+    idx   = trace.index('[')
     trace = trace[idx+1:]
     registers = trace.replace(']', '').split('|')
     registers = [ r.strip() for r in registers]
-    return (instr_name, registers)
+    return (pc, instr_name, registers)
 
 def export_basic_blocks(path, basic_blocks):
     basic_block_addresses = list(basic_blocks.keys())
@@ -185,8 +189,6 @@ def main():
     argParser.add_argument("--start", nargs=1, type=hex_number, help="...")
     argParser.add_argument("--end", nargs=1, type=hex_number, help="...")
     args = argParser.parse_args()
-
-    print(args)
 
     path = None
     asm_path = None
@@ -270,7 +272,7 @@ def main():
             call_count = basic_blocks[bb_start]
             if next_idx >= len(basic_block_addresses):
                 # end of last basic block cannot be determined currently
-                print(f"skipping basic block at '{hex(bb_start)}' (count={call_count})!")
+                print(f"> skipping basic block at '{bb_start:08x}' (count={call_count})!")
                 bb_end = bb_start
             else:
                 bb_end = basic_block_addresses[next_idx] - 4
@@ -293,8 +295,11 @@ def main():
             last_end   = bb_end
 
     total_convered_instruction_count = 0
-    
+
     metadata = []
+    print(f' {"start":>10} | {"end":>10} | {"size":>4} | {"count":>6} | {"weight":>7}' + (f' | asm' if args.asm else ''))
+    print( "-" * (50 + (bool(args.asm) * 50)))
+
     # iterate over all basic blocks
     for bb_start, call_count, instruction_count in selection:
         bb_end = bb_start + ((instruction_count - 1) * 4)
@@ -304,11 +309,14 @@ def main():
 
         assembly = extract_asm_from_traces(bb_start, instruction_count, asm_path, check_filename=asm_check_filename, pc_idx=asm_pc_idx, asm_idx=asm_idx, delimiter=asm_delimiter) if asm_path else None
 
-        print(f'address 0x{bb_start:08x} - 0x{bb_end:08x} | instructions {instruction_count:<4} | count {call_count:<6} ({converd_percentage * 100:.3}%)')
+        print(f' 0x{bb_start:08x} | 0x{bb_end:08x} | {instruction_count:>4} | {call_count:>6} | {converd_percentage * 100:6.3f}%', end='' if args.asm else '\n')
         if args.asm:
+            idx = 0
             for instruction in assembly:
                 instruction = parse_asm(instruction)
-                print(f" -> {instruction[0]:<5} {', '.join([f"{r:<8}" for r in instruction[1]])}")
+                print(instruction)
+                print(((" " * 50) if idx else "") + f" | {instruction[0]} {instruction[1]:<10} {', '.join([f"{r:<8}" for r in instruction[1]])}")
+                idx += 1
         if export_path is not None:
             assert assembly is not None
             with open(f"{export_path}/0x{bb_start:08x}.txt", 'w') as asm_file:
@@ -317,10 +325,12 @@ def main():
                 "name"   : f"0x{bb_start:08x}.txt",
                 "weight" : converd_percentage
             })
-    with open(f"{export_path}/experiment.json", "w") as f:
-        f.write(json.dumps(metadata, indent=4))
 
-    print(f"-> Basic blocks cover {total_convered_instruction_count} of {total_instructions} instructions ({((total_convered_instruction_count / total_instructions) * 100):.5}%)")
+    if export_path is not None:
+        with open(f"{export_path}/experiment.json", "w") as f:
+            f.write(json.dumps(metadata, indent=4))
+
+    print(f"Basic blocks cover {total_convered_instruction_count} of {total_instructions} instructions ({((total_convered_instruction_count / total_instructions) * 100):.5f}%)")
 
 if __name__ == "__main__":
     main()

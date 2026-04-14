@@ -11,6 +11,7 @@ repeat(){
 workspace=$(dirname $0)
 config_params="$workspace/study_params.txt"
 config_cores="$workspace/study_cores.txt"
+config_options="$workspace/study_script_options.txt"
 
 path=$1
 if [ -z $path ] || [ ! -d $path ]; then
@@ -18,27 +19,38 @@ if [ -z $path ] || [ ! -d $path ]; then
     exit 1
 fi
 
-if [ ! -f $config_params ] || [ ! -f $config_cores ]; then
-    echo "Config file '$config_params' or '$config_cores' is missing!"
+if [ ! -f $config_params ] || [ ! -f $config_cores ] || [ ! -f $config_options ]; then
+    echo "Config file '$config_params', '$config_cores' or '$config_options' is missing!"
     exit 2
 fi
 
 m2isarperf="$workspace/code_gen/generators/M2-ISA-R-Perf"
+if [ ! -d $m2isarperf ]; then
+    echo "M2-ISA-R-PERF not found!"
+    exit 3
+fi
 analyzer="$workspace/code_gen/code-analyzer"
+if [ ! -d $analyzer ]; then
+    echo "Code Analyzer not found!"
+    exit 3
+fi
 source "$analyzer/venv/bin/activate"
 
 # parse cores and benchmarks
 cores=$(cut -f1 -d',' < $config_cores)
 embenchs=$(cut -f1 -d',' < $config_params)
+options=$(grep ${0:2} < $config_options | cut -f2 -d',')
+echo -e "### options: $options"
+echo -e "### cores:   \n$cores"
+echo -e "### embenchs:\n$embenchs"
 
 for embench in $embenchs; do
-    printf $embench
-    
+    echo -e "\n\n### $embench"
+
     for core in $cores; do
         log_path="$path/$core/$embench/${embench}_estimates_log.txt"
         export_dir="$path/$core/$embench/export"
-        echo -e "\n\n### PYTHONPATH=$m2isarperf/m2isar_perf/ python3 $analyzer/main.py "$path/$core" --files "$export_dir/experiment.json" --cpi --no-dyn"
-        PYTHONPATH=$m2isarperf/m2isar_perf/ python3 $analyzer/main.py "$path/$core" --files "$export_dir/experiment.json" --cpi --no-dyn | tee "$log_path"
+        echo -e "\n\n### PYTHONPATH=$m2isarperf/m2isar_perf/ python3 $analyzer/main.py $path/$core --files $export_dir/experiment.json $options"
+        (PYTHONPATH=$m2isarperf/m2isar_perf/ python3 $analyzer/main.py $path/$core --files $export_dir/experiment.json $options | tee $log_path)
     done
-    printf "\n\n"
 done

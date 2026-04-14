@@ -40,7 +40,7 @@ printf "%20s , " "embench"
 for core in $cores; do
     printf -- "%-${max_len}s, " "$core"
 done
-printf "\b\b  \n"
+printf "\n"
 
 # print table (each row is an embench)
 for embench in $embenchs; do

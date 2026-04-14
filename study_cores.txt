@@ -1,5 +1,5 @@
 CV32E40P_n     ,                    ,
-CV32E40P_wi    ,L1I_delay           , IPort
-CV32E40P_wm    ,L1D_delay           , DPort
-CV32E40P_wim   ,L1I_delay;L1D_delay , IPort;DPort 
-CV32E40P_div   ,DIV_delay;DIVU_delay, DIV;DIVU
+CV32E40P_wi    ,L1I_delay           , "*IPort_R"
+CV32E40P_wm    ,L1D_delay           , "*DPort_?"
+CV32E40P_wim   ,L1I_delay;L1D_delay , "*IPort_R";"*DPort_?"
+CV32E40P_div   ,DIV_delay;DIVU_delay, "DIV";"DIVU"
