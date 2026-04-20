@@ -174,6 +174,7 @@ def main():
     argParser.add_argument("--per-instruction"    , action="store_true", help="Whether to extract metrics for each instruction in the basic blocks (must be used with --bbs-only).")
     argParser.add_argument("--average"            , action="store_true", help="Whether to create an average.")
     argParser.add_argument("--best-and-average"   , action="store_true", help="Whether to extract the best and the average.")
+    argParser.add_argument("--round"              , action="store_true", help="Whether to round the extracted values.")
 
     args = argParser.parse_args()
 
@@ -228,7 +229,7 @@ def main():
     if args.per_instruction:
         if not args.bbs_only:
             argParser.error("Requires the --bbs-only option!")
-        if not args.average and not args.best_and_average:
+        if not args.average and not args.best_and_average and not args.round:
             argParser.error("Requires the --average or --best-and-average option!")
 
     # parse traces and extract metrics
@@ -256,28 +257,23 @@ def main():
     
     # build average
     if args.average:
+        average = { name: sum(value * weight for value, weight in values.items()) for name, values in results.items() }
+
         results = [
             { 
                 "weight": 1, 
-                "variables": { name: sum(value * weight for value, weight in values.items()) for name, values in results.items() } 
+                "variables": average
             }
         ]
-        print(1, results[0]["variables"])
     # include smallest delay and build average of rest accordingly
     elif args.best_and_average:
         min_values  = { name: min(value for value in values) for name, values in results.items() }
-        min_weights = { name: values[min_values[name]] for name, values in results.items() }
 
-        min_values_weight = math.prod(weight for name, values in results.items() for value, weight in values.items() if value == min_values[name])
-        
         average = { name: sum(value * weight for value, weight in values.items()) for name, values in results.items() }
-        print("average", average)
 
         target_weight = 0.5
         average_substracted = { name: (average[name] - (min_values[name] * target_weight)) * (1 / (1 - target_weight)) for name in results }
-        print("average_substracted", average_substracted)
         average_substracted = { name: value if value > 0 else min_values[name] for name, value in average_substracted.items() }
-        print("average_substracted", average_substracted)
 
         results = [
             {
@@ -289,9 +285,19 @@ def main():
                 "variables": average_substracted
             }
         ]
-        print(1, results[0]["weight"], results[0]["variables"])
-        print(2, results[1]["weight"], results[1]["variables"])
     # build all possible combinatons
+    elif args.round:
+        average = { name: sum(value * weight for value, weight in values.items()) for name, values in results.items() }
+        rounded = { name: round(value) for name, value in average.items() }
+        #print("average", average)
+        #print("rounded", rounded)
+        results = [
+            { 
+                "weight": 1, 
+                "variables": rounded
+            }
+        ]
+        print(results)
     else:
         results = delay_combinations(results)
     

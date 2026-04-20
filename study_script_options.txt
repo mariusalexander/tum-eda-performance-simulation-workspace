@@ -1,2 +1,2 @@
-extract_target_matrics_for_study.sh,--bbs-only --per-instr --average
+extract_target_matrics_for_study.sh,--bbs-only --per-instr --round
 estimate_cpi_for_study.sh,--cpi --no-dyn, -b-p -i -v
